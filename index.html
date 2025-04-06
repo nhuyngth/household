@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nhận mã xác minh Netflix</title>
+  <script defer src="data.js"></script>
+  <script defer src="main.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center">
+  <div class="bg-gray-800 p-6 rounded-xl shadow-md w-full max-w-md">
+    <h1 class="text-2xl font-bold mb-4 text-center">Nhận mã xác minh Netflix</h1>
+    <input id="emailInput" type="email" placeholder="Nhập email của bạn" class="w-full p-2 rounded bg-gray-700 text-white mb-4 focus:outline-none">
+    <button onclick="checkEmail()" class="w-full bg-red-500 hover:bg-red-600 p-2 rounded font-semibold">Lấy mã</button>
+    <div id="result" class="mt-4 text-center text-lg font-mono"></div>
+
+    <!-- Nút admin ẩn -->
+    <div id="adminPanel" class="mt-6 hidden">
+      <h2 class="text-xl font-semibold mb-2">Cập nhật mã mới</h2>
+      <input id="newCode" type="text" placeholder="Nhập mã mới" class="w-full p-2 rounded bg-gray-700 text-white mb-2">
+      <button onclick="updateCode()" class="w-full bg-green-500 hover:bg-green-600 p-2 rounded font-semibold">Cập nhật</button>
+    </div>
+  </div>
+</body>
+</html>
