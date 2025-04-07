@@ -1,19 +1,29 @@
 const secretAdminCode = "admin123";
 
-function checkEmail() {
+async function checkEmail() {
   const email = document.getElementById("emailInput").value.trim().toLowerCase();
   const resultDiv = document.getElementById("result");
 
+  // Nếu nhập mã admin
   if (email === secretAdminCode) {
     document.getElementById("adminPanel").classList.remove("hidden");
     resultDiv.innerText = "🔐 Đã vào chế độ admin.";
     return;
   }
 
-  if (data.allowedEmails.includes(email)) {
-    resultDiv.innerText = `✅ Mã xác minh hiện tại là: ${data.code}`;
-  } else {
-    resultDiv.innerText = "❌ Email không có trong danh sách được phép.";
+  try {
+    const response = await fetch(`https://household-be.onrender.com/api/get-code?email=${email}`);
+    if (!response.ok) {
+      const errorData = await response.json();
+      resultDiv.innerText = `❌ ${errorData.message}`;
+      return;
+    }
+
+    const data = await response.json();
+    resultDiv.innerText = `✅ Mã xác minh mới nhất: ${data.code}`;
+  } catch (error) {
+    console.error("Lỗi kết nối:", error);
+    resultDiv.innerText = "❌ Đã xảy ra lỗi khi kết nối đến máy chủ.";
   }
 }
 
