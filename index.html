@@ -111,6 +111,47 @@
         padding: 12px;
       }
     }
+    .popup {
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.popup-content {
+  background-color: #1f1f1f;
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  color: #f2f2f2;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.popup-content h2 {
+  margin-top: 0;
+  font-size: 18px;
+}
+
+.popup-content ul, .popup-content ol {
+  padding-left: 20px;
+  font-size: 14px;
+}
+
+.popup .close {
+  color: #fff;
+  float: right;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
   </style>
 </head>
 <body>
@@ -185,6 +226,14 @@
 
       btn.disabled = false;
     }
+    function moHuongDan() {
+  document.getElementById("popupHuongDan").style.display = "flex";
+}
+
+function dongHuongDan() {
+  document.getElementById("popupHuongDan").style.display = "none";
+}
+
   </script>
 </body>
 </html>
