@@ -56,8 +56,7 @@
     }
 
     button {
-      width: 100%;
-      padding: 14px;
+      padding: 12px 20px;
       font-size: 16px;
       background: #e50914;
       color: white;
@@ -96,6 +95,54 @@
       word-break: break-word;
     }
 
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .popup {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0,0,0,0.5);
+      align-items: center;
+      justify-content: center;
+    }
+
+    .popup-content {
+      background-color: #1f1f1f;
+      padding: 20px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 500px;
+      color: #f2f2f2;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .popup-content h2 {
+      margin-top: 0;
+      font-size: 18px;
+    }
+
+    .popup-content ul, .popup-content ol {
+      padding-left: 20px;
+      font-size: 14px;
+    }
+
+    .popup .close {
+      color: #fff;
+      float: right;
+      font-size: 22px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
     @media (max-width: 500px) {
       .container {
         margin: 0 16px;
@@ -111,80 +158,40 @@
         padding: 12px;
       }
     }
-    .popup {
-  position: fixed;
-  z-index: 999;
-  left: 0;
-  top: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0,0,0,0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.popup-content {
-  background-color: #1f1f1f;
-  padding: 20px;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 500px;
-  color: #f2f2f2;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-}
-
-.popup-content h2 {
-  margin-top: 0;
-  font-size: 18px;
-}
-
-.popup-content ul, .popup-content ol {
-  padding-left: 20px;
-  font-size: 14px;
-}
-
-.popup .close {
-  color: #fff;
-  float: right;
-  font-size: 22px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Lấy mã xác nhận hộ gia đình Netflix</h1>
     <input type="email" id="emailInput" placeholder="Nhập địa chỉ Gmail..." />
-    <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
-  <button id="btnLayMa" onclick="layMa()">Lấy mã</button>
-  <button onclick="moHuongDan()">Hướng dẫn</button>
-</div>
+    
+    <div class="btn-group">
+      <button id="btnLayMa" onclick="layMa()">Lấy mã</button>
+      <button onclick="moHuongDan()">Hướng dẫn</button>
+    </div>
 
     <p id="ketQua"></p>
-<!-- POPUP HƯỚNG DẪN -->
-<div id="popupHuongDan" class="popup" style="display: none;">
-  <div class="popup-content">
-    <span class="close" onclick="dongHuongDan()">&times;</span>
-    <h2>📌 Hướng dẫn sử dụng</h2>
-    <ul>
-      <li>✅ Hãy chắc chắn rằng bạn đã chọn <strong>Cập nhật hộ gia đình</strong> trước khi vào website.</li>
-      <li>Nếu chưa, hãy làm như sau:
-        <ol>
-          <li>Chọn <strong>Cập nhật hộ gia đình</strong> trên TV hoặc thiết bị</li>
-          <li>Chọn <strong>Gửi email</strong></li>
-          <li>Truy cập trang web này</li>
-          <li>Nhập địa chỉ Gmail</li>
-          <li>Nhấn <strong>Lấy mã</strong></li>
-        </ol>
-      </li>
-      <li>⏳ Nếu sau khoảng <strong>1–2 phút</strong> vẫn chưa có mã, hãy nhấn <strong>Lấy mã</strong> thêm 1 lần nữa.</li>
-    </ul>
   </div>
-</div>
 
+  <!-- POPUP HƯỚNG DẪN -->
+  <div id="popupHuongDan" class="popup">
+    <div class="popup-content">
+      <span class="close" onclick="dongHuongDan()">&times;</span>
+      <h2>📌 Hướng dẫn sử dụng</h2>
+      <ul>
+        <li>✅ Hãy chắc chắn rằng bạn đã chọn <strong>Cập nhật hộ gia đình</strong> trước khi vào website.</li>
+        <li>Nếu chưa, hãy làm như sau:
+          <ol>
+            <li>Chọn <strong>Cập nhật hộ gia đình</strong> trên TV hoặc thiết bị</li>
+            <li>Chọn <strong>Gửi email</strong></li>
+            <li>Truy cập trang web này</li>
+            <li>Nhập địa chỉ Gmail</li>
+            <li>Nhấn <strong>Lấy mã</strong></li>
+          </ol>
+        </li>
+        <li>⏳ Nếu sau khoảng <strong>1–2 phút</strong> vẫn chưa có mã, hãy nhấn <strong>Lấy mã</strong> thêm 1 lần nữa.</li>
+      </ul>
+    </div>
   </div>
 
   <script>
@@ -202,7 +209,7 @@
 
       btn.disabled = true;
       ketQua.textContent = "⏳ Đang kiểm tra email, vui lòng chờ...";
-      
+
       try {
         const res = await fetch('https://netflix-household.onrender.com/get-code', {
           method: 'POST',
@@ -226,14 +233,14 @@
 
       btn.disabled = false;
     }
+
     function moHuongDan() {
-  document.getElementById("popupHuongDan").style.display = "flex";
-}
+      document.getElementById("popupHuongDan").style.display = "flex";
+    }
 
-function dongHuongDan() {
-  document.getElementById("popupHuongDan").style.display = "none";
-}
-
+    function dongHuongDan() {
+      document.getElementById("popupHuongDan").style.display = "none";
+    }
   </script>
 </body>
 </html>
