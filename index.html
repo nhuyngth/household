@@ -2,83 +2,38 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nhận Mã Hộ Gia Đình Netflix</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lấy Household Code Netflix</title>
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center px-4">
-  <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md text-center">
-    <h1 class="text-2xl font-bold mb-6 text-gray-800">Lấy Mã Hộ Gia Đình Netflix</h1>
-
-    <input
-      type="email"
-      id="emailInput"
-      placeholder="Nhập email tài khoản Netflix"
-      class="w-full px-4 py-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
-
-    <div class="flex justify-between mb-4">
-      <button
-        onclick="window.location.reload()"
-        class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-lg w-[48%]"
-      >
-        Tải lại
-      </button>
-
-      <button
-        onclick="getCode()"
-        class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg w-[48%]"
-      >
-        Nhận mã
-      </button>
-    </div>
-
-    <div id="result" class="text-left mt-4 text-sm text-gray-700"></div>
-  </div>
+<body>
+  <h1>Lấy mã xác nhận hộ gia đình Netflix</h1>
+  <input type="email" id="emailInput" placeholder="Nhập địa chỉ Gmail..." />
+  <button onclick="layMa()">Lấy mã</button>
+  <p id="ketQua"></p>
 
   <script>
-  async function getCode() {
-    const email = document.getElementById("emailInput").value.trim();
-    const resultDiv = document.getElementById("result");
+    async function layMa() {
+      const email = document.getElementById("emailInput").value;
+      const ketQua = document.getElementById("ketQua");
+      ketQua.textContent = "Vui lòng chờ đợi trong vài phút...";
 
-    if (!email) {
-      resultDiv.innerHTML = "<span class='text-red-600'>Vui lòng nhập email.</span>";
-      return;
-    }
+      try {
+        const res = await fetch('https://link-backend-cua-ban.onrender.com/get-code', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email })
+        });
 
-    resultDiv.innerHTML = "Vui lòng chờ đợi trong vài phút.";
-
-    try {
-      const response = await fetch("https://your-backend-url.onrender.com/get-code", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.link) {
-        resultDiv.innerHTML = `
-          <p><strong>Link từ email:</strong></p>
-          <a href="${data.link}" target="_blank" class="text-blue-600 underline">${data.link}</a>
-        `;
-      } else {
-        // Kiểm tra lỗi cụ thể từ backend
-        if (data.error === "email_not_found") {
-          resultDiv.innerHTML = "<span class='text-red-600'>Địa chỉ email không tồn tại trong hệ thống.</span>";
-        } else if (data.error === "code_not_found") {
-          resultDiv.innerHTML = "<span class='text-red-600'>Không tìm thấy yêu cầu xác nhận hộ gia đình.</span>";
+        const data = await res.json();
+        if (data.success) {
+          ketQua.textContent = "Mã xác nhận là: " + data.code;
         } else {
-          resultDiv.innerHTML = `<span class='text-red-600'>Lỗi: ${data.message || "Không xác định."}</span>`;
+          ketQua.textContent = data.message || "Không tìm thấy yêu cầu xác nhận hộ gia đình.";
         }
+      } catch (err) {
+        ketQua.textContent = "Đã xảy ra lỗi, vui lòng thử lại sau.";
       }
-    } catch (error) {
-      resultDiv.innerHTML = "<span class='text-red-600'>Lỗi kết nối tới máy chủ.</span>";
     }
-  }
-</script>
-
+  </script>
 </body>
 </html>
