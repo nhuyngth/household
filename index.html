@@ -3,44 +3,94 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Lấy mã Netflix</title>
+  <link rel="icon" type="image/png" href="assets/img/favicon.png">
+  <title>Cập nhật hộ gia đình Netflix</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg-color: #111;
+      --container-bg: rgba(31, 31, 31, 0.85);
+      --text-color: white;
+      --input-bg: #2d2d2d;
+      --btn-bg: #e50914;
+      --btn-hover: #b00610;
+      --font: 'Inter', sans-serif;
+    }
+
+    body.light {
+      --bg-color: #f5f5f5;
+      --container-bg: rgba(255, 255, 255, 0.95);
+      --text-color: #111;
+      --input-bg: #ddd;
+      --btn-bg: #e50914;
+      --btn-hover: #b00610;
+    }
+
     * {
       box-sizing: border-box;
     }
 
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #111, #2c2c2c);
-      color: white;
+      font-family: var(--font);
+      background: var(--bg-color) url('https://images.unsplash.com/photo-1605902711622-cfb43c4437d3') no-repeat center center fixed;
+      background-size: cover;
+      color: var(--text-color);
       margin: 0;
       padding: 0;
       display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+    }
+
+    .banner {
+      background: #ffc107;
+      color: black;
+      width: 100%;
+      text-align: center;
+      padding: 10px;
+      font-size: 14px;
+    }
+
+    .toolbar {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .toolbar button {
+      background: white;
+      color: black;
+      border: none;
+      border-radius: 100px;
+      width: 36px;
+      height: 36px;
+      display: flex;
       align-items: center;
       justify-content: center;
-      height: 100vh;
+      font-size: 18px;
+      box-shadow: 0 0 6px rgba(0,0,0,0.1);
+      cursor: pointer;
     }
 
     .container {
-      background: #1f1f1f;
+      background: var(--container-bg);
+      backdrop-filter: blur(12px);
       padding: 30px 20px;
       border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
       text-align: center;
-      animation: fadeIn 0.5s ease;
-    }
-
-    @keyframes fadeIn {
-      from {opacity: 0; transform: translateY(10px);}
-      to {opacity: 1; transform: translateY(0);}
+      margin-top: 60px;
     }
 
     h1 {
       font-size: 20px;
       margin-bottom: 20px;
-      color: #f2f2f2;
     }
 
     input[type="email"] {
@@ -50,29 +100,80 @@
       border: none;
       margin-bottom: 15px;
       font-size: 16px;
-      background: #333;
-      color: white;
-      outline: none;
+      background: var(--input-bg);
+      color: var(--text-color);
     }
 
-    button {
+    button.main {
       padding: 12px 20px;
-      font-size: 16px;
-      background: #e50914;
+      font-size: 15px;
+      background: var(--btn-bg);
       color: white;
-      border: none;
       border-radius: 10px;
+      border: none;
       cursor: pointer;
-      transition: background 0.3s ease, transform 0.2s;
+      transition: background 0.2s ease;
     }
 
-    button:hover {
-      background: #b00610;
+    button.main:hover {
+      background: var(--btn-hover);
     }
 
-    button:disabled {
-      background: #666;
-      cursor: not-allowed;
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    #ketQua {
+      margin-top: 16px;
+      min-height: 24px;
+      font-size: 15px;
+    }
+
+    #maCode {
+      margin-top: 20px;
+      display: none;
+    }
+
+    .popup {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.5);
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+
+    .popup-content {
+      background: var(--container-bg);
+      padding: 20px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 500px;
+      color: var(--text-color);
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    }
+
+    .popup-content h2 {
+      margin-top: 0;
+      font-size: 20px;
+    }
+
+    .popup-content .close {
+      float: right;
+      font-size: 22px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    ul, ol {
+      text-align: left;
+      padding-left: 20px;
     }
 
     .shake {
@@ -87,93 +188,36 @@
       100% { transform: translateX(0); }
     }
 
-    #ketQua {
-      margin-top: 20px;
-      font-size: 15px;
-      color: #ddd;
-      min-height: 24px;
-      word-break: break-word;
-    }
-
-    .btn-group {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .popup {
-      display: none;
-      position: fixed;
-      z-index: 999;
-      left: 0;
-      top: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: rgba(0,0,0,0.5);
-      align-items: center;
-      justify-content: center;
-    }
-
-    .popup-content {
-      background-color: #1f1f1f;
-      padding: 20px;
-      border-radius: 12px;
-      width: 90%;
-      max-width: 500px;
-      color: #f2f2f2;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-    }
-
-    .popup-content h2 {
-      margin-top: 0;
-      font-size: 18px;
-    }
-
-    .popup-content ul, .popup-content ol {
-      padding-left: 20px;
-      font-size: 14px;
-    }
-
-    .popup .close {
-      color: #fff;
-      float: right;
-      font-size: 22px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
     @media (max-width: 500px) {
-      .container {
-        margin: 0 16px;
-        padding: 25px 16px;
-      }
-
-      h1 {
-        font-size: 18px;
-      }
-
-      input, button {
-        font-size: 15px;
-        padding: 12px;
-      }
+      h1 { font-size: 18px; }
+      input, button.main { font-size: 15px; padding: 12px; }
+      .toolbar { right: 10px; top: 10px; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Lấy mã xác nhận hộ gia đình Netflix</h1>
-    <input type="email" id="emailInput" placeholder="Nhập địa chỉ Gmail..." />
-    
-    <div class="btn-group">
-      <button id="btnLayMa" onclick="layMa()">Lấy mã</button>
-      <button onclick="moHuongDan()">Hướng dẫn</button>
-    </div>
+  <div class="banner">Website đang trong quá trình thử nghiệm, nếu xảy ra lỗi quý khách vui lòng liên hệ seller.</div>
 
-    <p id="ketQua"></p>
+  <div class="toolbar">
+    <button onclick="toggleLang()">🌐</button>
+    <button onclick="toggleTheme()" id="themeToggle">🌙</button>
   </div>
 
-  <!-- POPUP HƯỚNG DẪN -->
+  <div class="container">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" width="120" style="margin-bottom: 20px;">
+    <h1 id="title">Lấy mã xác nhận hộ gia đình Netflix</h1>
+    <input type="email" id="emailInput" placeholder="Nhập địa chỉ Gmail..." />
+    <div class="btn-group">
+      <button class="main" id="btnLayMa" onclick="layMa()">Lấy mã</button>
+      <button class="main" onclick="moHuongDan()">Hướng dẫn</button>
+    </div>
+    <p id="ketQua"></p>
+    <div id="maCode">
+      <span id="linkCode" style="background:var(--input-bg);padding:8px 12px;border-radius:8px;display:inline-block;"></span>
+      <button onclick="copyCode()" style="margin-left: 8px;" class="main">📋 Copy</button>
+    </div>
+  </div>
+
   <div id="popupHuongDan" class="popup">
     <div class="popup-content">
       <span class="close" onclick="dongHuongDan()">&times;</span>
@@ -195,20 +239,44 @@
   </div>
 
   <script>
+    function toggleTheme() {
+      document.body.classList.toggle("light");
+      document.getElementById("themeToggle").textContent = document.body.classList.contains("light") ? "☀️" : "🌙";
+      localStorage.setItem("theme", document.body.classList.contains("light") ? "light" : "dark");
+    }
+
+    function toggleLang() {
+      const lang = document.documentElement.lang === "vi" ? "en" : "vi";
+      document.documentElement.lang = lang;
+      localStorage.setItem("lang", lang);
+      location.reload();
+    }
+
+    function moHuongDan() {
+      document.getElementById("popupHuongDan").style.display = "flex";
+    }
+
+    function dongHuongDan() {
+      document.getElementById("popupHuongDan").style.display = "none";
+    }
+
     async function layMa() {
       const email = document.getElementById("emailInput").value.trim();
       const btn = document.getElementById("btnLayMa");
       const ketQua = document.getElementById("ketQua");
+      const maCodeDiv = document.getElementById("maCode");
+      document.getElementById("linkCode").textContent = '';
+      maCodeDiv.style.display = "none";
 
       if (!email) {
-        ketQua.textContent = "Vui lòng nhập địa chỉ Gmail.";
+        ketQua.textContent = "❗ Vui lòng nhập địa chỉ Gmail.";
         btn.classList.add("shake");
         setTimeout(() => btn.classList.remove("shake"), 300);
         return;
       }
 
       btn.disabled = true;
-      ketQua.textContent = "⏳ Đang kiểm tra email, vui lòng chờ...";
+      ketQua.textContent = "⏳ Đang kiểm tra email...";
 
       try {
         const res = await fetch('https://netflix-household.onrender.com/get-code', {
@@ -219,14 +287,16 @@
 
         const data = await res.json();
         if (data.success) {
-          ketQua.textContent = "✅ Mã xác nhận là: " + data.code;
+          ketQua.textContent = "✅ Mã xác nhận đã tìm thấy!";
+          document.getElementById("linkCode").textContent = data.code;
+          maCodeDiv.style.display = "block";
         } else {
-          ketQua.textContent = "⚠️ " + (data.message || "Không tìm thấy mã xác nhận.");
+          ketQua.textContent = "⚠️ Không tìm thấy mã xác nhận.";
           btn.classList.add("shake");
           setTimeout(() => btn.classList.remove("shake"), 300);
         }
       } catch (err) {
-        ketQua.textContent = "❌ Lỗi kết nối đến máy chủ, vui lòng thử lại.";
+        ketQua.textContent = "❌ Lỗi kết nối đến máy chủ.";
         btn.classList.add("shake");
         setTimeout(() => btn.classList.remove("shake"), 300);
       }
@@ -234,13 +304,19 @@
       btn.disabled = false;
     }
 
-    function moHuongDan() {
-      document.getElementById("popupHuongDan").style.display = "flex";
+    function copyCode() {
+      const code = document.getElementById("linkCode").textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        alert("✅ Đã copy mã xác nhận!");
+      });
     }
 
-    function dongHuongDan() {
-      document.getElementById("popupHuongDan").style.display = "none";
-    }
+    window.onload = () => {
+      if (localStorage.getItem("theme") === "light") {
+        document.body.classList.add("light");
+        document.getElementById("themeToggle").textContent = "☀️";
+      }
+    };
   </script>
 </body>
 </html>
