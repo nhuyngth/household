@@ -1,12 +1,13 @@
 <!DOCTYPE html>
+
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="icon" type="image/png" href="assets/img/favicon.png">
-  <title>Cập nhật hộ gia đình Netflix</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<title>Lấy mã Netflix</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<style>
     :root {
       --bg-color: #111;
       --container-bg: rgba(31, 31, 31, 0.85);
@@ -193,63 +194,237 @@
       input, button.main { font-size: 15px; padding: 12px; }
       .toolbar { right: 10px; top: 10px; }
     }
-  </style>
+  
+    .floating-banner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 36px;
+      width: 100%;
+      overflow: hidden;
+      background: #ffc107;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+    }
+
+    .floating-banner span {
+      position: absolute;
+      white-space: nowrap;
+      font-size: 14px;
+      padding: 0 20px;
+      animation: scrollBanner 10s linear infinite alternate;
+    }
+
+    @keyframes scrollBanner {
+      0%   { left: -100%; }
+      100% { left: calc(100% - 180px); } /* sẽ tránh nút chế độ */
+    }
+
+    body {
+      padding-top: 36px; /* đẩy nội dung xuống dưới banner */
+    }
+    
+  .floating-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 40px;
+    width: 100%;
+    overflow: hidden;
+    background: var(--container-bg);
+    color: var(--text-color);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .banner-text {
+    white-space: nowrap;
+    font-size: 14px;
+    animation: scrollBanner 12s linear infinite alternate;
+  }
+
+  .banner-controls {
+    display: flex;
+    gap: 10px;
+  }
+
+  .banner-controls button {
+    background: transparent;
+    color: var(--text-color);
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+  }
+
+  @keyframes scrollBanner {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(0); }
+  }
+
+  body {
+    padding-top: 40px !important;
+  }
+
+  .floating-banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .banner-scroll-area {
+    overflow: hidden;
+    flex: 1;
+    margin-right: 12px;
+    height: 100%;
+  }
+
+  .banner-text {
+    display: inline-block;
+    white-space: nowrap;
+    font-size: 14px;
+    animation: scrollBanner 12s linear infinite alternate;
+    padding-left: 100%;
+  }
+
+  .banner-controls button {
+    font-size: 18px;
+    border-radius: 100px;
+    padding: 6px;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .banner-controls button svg {
+    width: 18px;
+    height: 18px;
+    fill: var(--text-color);
+  }
+
+  .banner-scroll-area {
+    position: relative;
+    overflow: hidden;
+    flex: 1;
+    margin-right: 12px;
+    height: 100%;
+    mask-image: linear-gradient(to right, black 80%, transparent);
+    -webkit-mask-image: linear-gradient(to right, black 80%, transparent);
+  }
+
+  .banner-text {
+    display: inline-block;
+    white-space: nowrap;
+    font-size: 14px;
+    animation: scrollBanner 18s linear infinite;
+  }
+
+  @keyframes scrollBanner {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  .banner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+</style>
 </head>
-<body>
-  <div class="banner">Website đang trong quá trình thử nghiệm, nếu xảy ra lỗi quý khách vui lòng liên hệ seller.</div>
-
-  <div class="toolbar">
-    <button onclick="toggleLang()">🌐</button>
-    <button onclick="toggleTheme()" id="themeToggle">🌙</button>
-  </div>
-
-  <div class="container">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" width="120" style="margin-bottom: 20px;">
-    <h1 id="title">Lấy mã xác nhận hộ gia đình Netflix</h1>
-    <input type="email" id="emailInput" placeholder="Nhập địa chỉ Gmail..." />
-    <div class="btn-group">
-      <button class="main" id="btnLayMa" onclick="layMa()">Lấy mã</button>
-      <button class="main" onclick="moHuongDan()">Hướng dẫn</button>
-    </div>
-    <p id="ketQua"></p>
-    <div id="maCode">
-      <span id="linkCode" style="background:var(--input-bg);padding:8px 12px;border-radius:8px;display:inline-block;"></span>
-      <button onclick="copyCode()" style="margin-left: 8px;" class="main">📋 Copy</button>
-    </div>
-  </div>
-
-  <div id="popupHuongDan" class="popup">
-    <div class="popup-content">
-      <span class="close" onclick="dongHuongDan()">&times;</span>
-      <h2>📌 Hướng dẫn sử dụng</h2>
-      <ul>
-        <li>✅ Hãy chắc chắn rằng bạn đã chọn <strong>Cập nhật hộ gia đình</strong> trước khi vào website.</li>
-        <li>Nếu chưa, hãy làm như sau:
+<body><div class="floating-banner"><div class="banner-scroll-area"><span class="banner-text" id="bannerText">Website đang trong quá trình thử nghiệm, nếu xảy ra lỗi quý khách vui lòng liên hệ seller.</span></div><div class="banner-controls"><button id="langBtn" onclick="toggleLang()">🌐</button><button id="themeToggle" onclick="toggleTheme()">🌙</button></div></div>
+<div class="container">
+<img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" style="margin-bottom: 20px;" width="120"/>
+<h1 id="title">Lấy mã xác nhận hộ gia đình Netflix</h1>
+<input id="emailInput" placeholder="Nhập địa chỉ Gmail..." type="email"/>
+<div class="btn-group">
+<button class="main" id="btnLayMa" onclick="layMa()">Lấy mã</button>
+<button class="main" id="btnGuide" onclick="moHuongDan()">Hướng dẫn</button>
+</div>
+<p id="ketQua"></p>
+<div id="maCode">
+<span id="linkCode" style="background:var(--input-bg);padding:8px 12px;border-radius:8px;display:inline-block;"></span>
+<button class="main" onclick="copyCode()" style="margin-left: 8px;">📋 Copy</button>
+</div>
+</div>
+<div class="popup" id="popupHuongDan">
+<div class="popup-content">
+<span class="close" onclick="dongHuongDan()">×</span>
+<h2 id="guideTitle">📌 Hướng dẫn sử dụng</h2>
+<ul>
+<li>✅ Hãy chắc chắn rằng bạn đã chọn <strong>Cập nhật hộ gia đình</strong> trước khi vào website.</li>
+<li>Nếu chưa, hãy làm như sau:
           <ol>
-            <li>Chọn <strong>Cập nhật hộ gia đình</strong> trên TV hoặc thiết bị</li>
-            <li>Chọn <strong>Gửi email</strong></li>
-            <li>Truy cập trang web này</li>
-            <li>Nhập địa chỉ Gmail</li>
-            <li>Nhấn <strong>Lấy mã</strong></li>
-          </ol>
-        </li>
-        <li>⏳ Nếu sau khoảng <strong>1–2 phút</strong> vẫn chưa có mã, hãy nhấn <strong>Lấy mã</strong> thêm 1 lần nữa.</li>
-      </ul>
-    </div>
-  </div>
+<li>Chọn <strong>Cập nhật hộ gia đình</strong> trên TV hoặc thiết bị</li>
+<li>Chọn <strong>Gửi email</strong></li>
+<li>Truy cập trang web này</li>
+<li>Nhập địa chỉ Gmail</li>
+<li>Nhấn <strong>Lấy mã</strong></li>
+</ol>
+</li>
+<li>⏳ Nếu sau khoảng <strong>1–2 phút</strong> vẫn chưa có mã, hãy nhấn <strong>Lấy mã</strong> thêm 1 lần nữa.</li>
+</ul>
+</div>
+</div>
+<script>
+let lang = localStorage.getItem("lang") || "vi";
 
-  <script>
+const texts = {
+  vi: {
+    title: "Lấy mã xác nhận hộ gia đình Netflix",
+    placeholder: "Nhập địa chỉ Gmail...",
+    getCode: "Lấy mã",
+    guide: "Hướng dẫn",
+    copied: "✅ Đã copy mã xác nhận!",
+    required: "❗ Vui lòng nhập địa chỉ Gmail.",
+    loading: "⏳ Đang kiểm tra email...",
+    found: "✅ Mã xác nhận đã tìm thấy!",
+    notfound: "⚠️ Không tìm thấy mã xác nhận.",
+    error: "❌ Lỗi kết nối đến máy chủ."
+  },
+  en: {
+    title: "Get Netflix Household Code",
+    placeholder: "Enter your Gmail...",
+    getCode: "Get Code",
+    guide: "Guide",
+    copied: "✅ Code copied!",
+    required: "❗ Please enter Gmail.",
+    loading: "⏳ Checking email...",
+    found: "✅ Code found!",
+    notfound: "⚠️ No code found.",
+    error: "❌ Server error."
+  }
+};
+
+function applyLang() {
+  const t = texts[lang];
+  document.getElementById("title").textContent = t.title;
+  document.getElementById("emailInput").placeholder = t.placeholder;
+  document.getElementById("btnLayMa").textContent = t.getCode;
+  document.querySelector(".btn-group button:nth-child(2)").textContent = t.guide;
+}
+
+function toggleLang() {
+  lang = lang === "vi" ? "en" : "vi";
+  localStorage.setItem("lang", lang);
+  applyLang();
+}
+
+
+
     function toggleTheme() {
       document.body.classList.toggle("light");
       document.getElementById("themeToggle").textContent = document.body.classList.contains("light") ? "☀️" : "🌙";
       localStorage.setItem("theme", document.body.classList.contains("light") ? "light" : "dark");
-    }
-
-    function toggleLang() {
-      const lang = document.documentElement.lang === "vi" ? "en" : "vi";
-      document.documentElement.lang = lang;
-      localStorage.setItem("lang", lang);
-      location.reload();
     }
 
     function moHuongDan() {
@@ -318,5 +493,5 @@
       }
     };
   </script>
-</body>
+<footer style="text-align:center; padding:20px; font-size:14px; color:gray;">2025 © @nhuyngth</footer></body>
 </html>
