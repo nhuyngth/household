@@ -218,11 +218,11 @@
 
     @keyframes scrollBanner {
       0%   { left: -100%; }
-      100% { left: calc(100% - 180px); } /* sẽ tránh nút chế độ */
+      100% { left: calc(100% - 180px); } 
     }
 
     body {
-      padding-top: 36px; /* đẩy nội dung xuống dưới banner */
+      padding-top: 36px; 
     }
     
   .floating-banner {
@@ -531,5 +531,167 @@ window.onload = () => {
   applyLang();
   document.getElementById("emailInput").focus();
 };
-</script></body>
+</script>
+<script>
+let lang = localStorage.getItem("lang") || "vi";
+
+const texts = {
+  vi: {
+    title: "Lấy mã xác nhận hộ gia đình Netflix",
+    placeholder: "Nhập địa chỉ Gmail...",
+    getCode: "Lấy mã",
+    guide: "Hướng dẫn",
+    copied: "✅ Đã copy mã xác nhận!",
+    required: "❗ Vui lòng nhập địa chỉ Gmail.",
+    loading: "⏳ Đang kiểm tra email...",
+    found: "✅ Mã xác nhận đã tìm thấy!",
+    notfound: "⚠️ Không tìm thấy mã xác nhận.",
+    nocode: "❌ Email không tồn tại trong hệ thống.",
+    error: "❌ Lỗi kết nối đến máy chủ.",
+    banner: "Website đang trong quá trình thử nghiệm, nếu xảy ra lỗi quý khách vui lòng liên hệ seller.",
+    guideTitle: "📌 Hướng dẫn sử dụng",
+    guideContent: `<ul>
+      <li>✅ Hãy chắc chắn rằng bạn đã chọn <strong>Cập nhật hộ gia đình</strong> trước khi vào website.</li>
+      <li>Nếu chưa, hãy làm như sau:
+        <ol>
+          <li>Chọn <strong>Cập nhật hộ gia đình</strong> trên TV hoặc thiết bị</li>
+          <li>Chọn <strong>Gửi email</strong></li>
+          <li>Truy cập trang web này</li>
+          <li>Nhập địa chỉ Gmail</li>
+          <li>Nhấn <strong>Lấy mã</strong></li>
+        </ol>
+      </li>
+      <li>⏳ Nếu sau khoảng <strong>1–2 phút</strong> vẫn chưa có mã, hãy nhấn <strong>Lấy mã</strong> thêm 1 lần nữa.</li>
+    </ul>`
+  },
+  en: {
+    title: "Get Netflix Household Code",
+    placeholder: "Enter your Gmail...",
+    getCode: "Get Code",
+    guide: "Guide",
+    copied: "✅ Code copied!",
+    required: "❗ Please enter Gmail.",
+    loading: "⏳ Checking email...",
+    found: "✅ Code found!",
+    notfound: "⚠️ No code found.",
+    nocode: "❌ Email not found in the system.",
+    error: "❌ Server error.",
+    banner: "This website is currently in testing. If any error occurs, please contact the seller.",
+    guideTitle: "📌 How to use",
+    guideContent: `<ul>
+      <li>✅ Make sure you selected <strong>Update Household</strong> before using this website.</li>
+      <li>If not, please do the following:
+        <ol>
+          <li>Select <strong>Update Household</strong> on your TV or device</li>
+          <li>Select <strong>Send Email</strong></li>
+          <li>Access this website</li>
+          <li>Enter your Gmail address</li>
+          <li>Click <strong>Get Code</strong></li>
+        </ol>
+      </li>
+      <li>⏳ If after <strong>1–2 minutes</strong> you haven’t received the code, click <strong>Get Code</strong> again.</li>
+    </ul>`
+  }
+};
+
+function applyLang() {
+  const t = texts[lang];
+  document.getElementById("title").textContent = t.title;
+  document.getElementById("emailInput").placeholder = t.placeholder;
+  document.getElementById("btnLayMa").textContent = t.getCode;
+  document.querySelector(".btn-group button:nth-child(2)").textContent = t.guide;
+  document.getElementById("bannerText").textContent = t.banner;
+  document.getElementById("guideTitle").textContent = t.guideTitle;
+  document.getElementById("guideContent").innerHTML = t.guideContent;
+}
+
+function toggleLang() {
+  lang = lang === "vi" ? "en" : "vi";
+  localStorage.setItem("lang", lang);
+  applyLang();
+}
+
+function toggleTheme() {
+  document.body.classList.toggle("light");
+  const icon = document.getElementById("themeToggle");
+  icon.textContent = document.body.classList.contains("light") ? "☀️" : "🌙";
+  localStorage.setItem("theme", document.body.classList.contains("light") ? "light" : "dark");
+}
+
+function moHuongDan() {
+  document.getElementById("popupHuongDan").style.display = "flex";
+}
+
+function dongHuongDan() {
+  document.getElementById("popupHuongDan").style.display = "none";
+}
+
+async function layMa() {
+  const email = document.getElementById("emailInput").value.trim();
+  const btn = document.getElementById("btnLayMa");
+  const ketQua = document.getElementById("ketQua");
+  const maCodeDiv = document.getElementById("maCode");
+  document.getElementById("linkCode").textContent = '';
+  maCodeDiv.style.display = "none";
+
+  if (!email) {
+    ketQua.textContent = texts[lang].required;
+    btn.classList.add("shake");
+    setTimeout(() => btn.classList.remove("shake"), 300);
+    return;
+  }
+
+  btn.disabled = true;
+  ketQua.textContent = texts[lang].loading;
+
+  try {
+    const res = await fetch('https://netflix-household.onrender.com/get-code', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      ketQua.textContent = texts[lang].found;
+      document.getElementById("linkCode").textContent = data.code;
+      maCodeDiv.style.display = "block";
+    } else {
+      if (data.message === "not registered") {
+        ketQua.textContent = texts[lang].nocode;
+      } else if (data.message === "no code") {
+        ketQua.textContent = texts[lang].notfound;
+      } else {
+        ketQua.textContent = texts[lang].error;
+      }
+      btn.classList.add("shake");
+      setTimeout(() => btn.classList.remove("shake"), 300);
+    }
+  } catch (err) {
+    ketQua.textContent = texts[lang].error;
+    btn.classList.add("shake");
+    setTimeout(() => btn.classList.remove("shake"), 300);
+  }
+
+  btn.disabled = false;
+}
+
+function copyCode() {
+  const code = document.getElementById("linkCode").textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    alert(texts[lang].copied);
+  });
+}
+
+window.onload = () => {
+  if (localStorage.getItem("theme") === "light") {
+    document.body.classList.add("light");
+    document.getElementById("themeToggle").textContent = "☀️";
+  }
+  applyLang();
+  document.getElementById("emailInput").focus();
+};
+</script>
+
+</body>
 </html>
