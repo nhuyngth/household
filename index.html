@@ -388,7 +388,7 @@ const texts = {
     required: "❗ Vui lòng nhập địa chỉ Gmail.",
     loading: "⏳ Đang kiểm tra email...",
     found: "✅ Mã xác nhận đã tìm thấy!",
-    notfound: "⚠️ Không tìm thấy mã xác nhận.",
+    notfound: "❌ Email không tồn tại trong hệ thống.",
     error: "❌ Lỗi kết nối đến máy chủ.",
     banner: "Website đang trong quá trình thử nghiệm, nếu xảy ra lỗi quý khách vui lòng liên hệ seller.",
     guideTitle: "📌 Hướng dẫn sử dụng",
@@ -415,7 +415,7 @@ const texts = {
     required: "❗ Please enter Gmail.",
     loading: "⏳ Checking email...",
     found: "✅ Code found!",
-    notfound: "⚠️ No code found.",
+    notfound: "❌ Email not found in the system.",
     error: "❌ Server error.",
     banner: "This website is currently in testing. If any error occurs, please contact the seller.",
     guideTitle: "📌 How to use",
@@ -497,11 +497,16 @@ async function layMa() {
       ketQua.textContent = texts[lang].found;
       document.getElementById("linkCode").textContent = data.code;
       maCodeDiv.style.display = "block";
-    } else {
-      ketQua.textContent = texts[lang].notfound;
-      btn.classList.add("shake");
-      setTimeout(() => btn.classList.remove("shake"), 300);
     }
+else {
+  if (data.message && data.message.includes("not registered")) {
+    ketQua.textContent = texts[lang].notfound;
+  } else {
+    ketQua.textContent = texts[lang].notfound;
+  }
+  btn.classList.add("shake");
+  setTimeout(() => btn.classList.remove("shake"), 300);
+}
   } catch (err) {
     ketQua.textContent = texts[lang].error;
     btn.classList.add("shake");
