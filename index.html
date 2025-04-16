@@ -3,36 +3,162 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Lấy Household Code Netflix</title>
+  <title>Lấy mã Netflix</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #111, #2c2c2c);
+      color: white;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: #1f1f1f;
+      padding: 30px 20px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(10px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    h1 {
+      font-size: 20px;
+      margin-bottom: 20px;
+      color: #f2f2f2;
+    }
+
+    input[type="email"] {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: none;
+      margin-bottom: 15px;
+      font-size: 16px;
+      background: #333;
+      color: white;
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      background: #e50914;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s;
+    }
+
+    button:hover {
+      background: #b00610;
+    }
+
+    button:disabled {
+      background: #666;
+      cursor: not-allowed;
+    }
+
+    .shake {
+      animation: shake 0.3s;
+    }
+
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+      100% { transform: translateX(0); }
+    }
+
+    #ketQua {
+      margin-top: 20px;
+      font-size: 15px;
+      color: #ddd;
+      min-height: 24px;
+      word-break: break-word;
+    }
+
+    @media (max-width: 500px) {
+      .container {
+        margin: 0 16px;
+        padding: 25px 16px;
+      }
+
+      h1 {
+        font-size: 18px;
+      }
+
+      input, button {
+        font-size: 15px;
+        padding: 12px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h1>Lấy mã xác nhận hộ gia đình Netflix</h1>
-  <input type="email" id="emailInput" placeholder="Nhập địa chỉ Gmail..." />
-  <button onclick="layMa()">Lấy mã</button>
-  <p id="ketQua"></p>
+  <div class="container">
+    <h1>Lấy mã xác nhận hộ gia đình Netflix</h1>
+    <input type="email" id="emailInput" placeholder="Nhập địa chỉ Gmail..." />
+    <button id="btnLayMa" onclick="layMa()">Lấy mã</button>
+    <p id="ketQua"></p>
+  </div>
 
   <script>
     async function layMa() {
-      const email = document.getElementById("emailInput").value;
+      const email = document.getElementById("emailInput").value.trim();
+      const btn = document.getElementById("btnLayMa");
       const ketQua = document.getElementById("ketQua");
-      ketQua.textContent = "Vui lòng chờ đợi trong vài phút...";
 
+      if (!email) {
+        ketQua.textContent = "Vui lòng nhập địa chỉ Gmail.";
+        btn.classList.add("shake");
+        setTimeout(() => btn.classList.remove("shake"), 300);
+        return;
+      }
+
+      btn.disabled = true;
+      ketQua.textContent = "⏳ Đang kiểm tra email, vui lòng chờ...";
+      
       try {
         const res = await fetch('https://link-backend-cua-ban.onrender.com/get-code', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: email })
+          body: JSON.stringify({ email })
         });
 
         const data = await res.json();
         if (data.success) {
-          ketQua.textContent = "Mã xác nhận là: " + data.code;
+          ketQua.textContent = "✅ Mã xác nhận là: " + data.code;
         } else {
-          ketQua.textContent = data.message || "Không tìm thấy yêu cầu xác nhận hộ gia đình.";
+          ketQua.textContent = "⚠️ " + (data.message || "Không tìm thấy mã xác nhận.");
+          btn.classList.add("shake");
+          setTimeout(() => btn.classList.remove("shake"), 300);
         }
       } catch (err) {
-        ketQua.textContent = "Đã xảy ra lỗi, vui lòng thử lại sau.";
+        ketQua.textContent = "❌ Lỗi kết nối đến máy chủ, vui lòng thử lại.";
+        btn.classList.add("shake");
+        setTimeout(() => btn.classList.remove("shake"), 300);
       }
+
+      btn.disabled = false;
     }
   </script>
 </body>
