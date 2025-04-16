@@ -117,8 +117,33 @@
   <div class="container">
     <h1>Lấy mã xác nhận hộ gia đình Netflix</h1>
     <input type="email" id="emailInput" placeholder="Nhập địa chỉ Gmail..." />
-    <button id="btnLayMa" onclick="layMa()">Lấy mã</button>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+  <button id="btnLayMa" onclick="layMa()">Lấy mã</button>
+  <button onclick="moHuongDan()">Hướng dẫn</button>
+</div>
+
     <p id="ketQua"></p>
+<!-- POPUP HƯỚNG DẪN -->
+<div id="popupHuongDan" class="popup" style="display: none;">
+  <div class="popup-content">
+    <span class="close" onclick="dongHuongDan()">&times;</span>
+    <h2>📌 Hướng dẫn sử dụng</h2>
+    <ul>
+      <li>✅ Hãy chắc chắn rằng bạn đã chọn <strong>Cập nhật hộ gia đình</strong> trước khi vào website.</li>
+      <li>Nếu chưa, hãy làm như sau:
+        <ol>
+          <li>Chọn <strong>Cập nhật hộ gia đình</strong> trên TV hoặc thiết bị</li>
+          <li>Chọn <strong>Gửi email</strong></li>
+          <li>Truy cập trang web này</li>
+          <li>Nhập địa chỉ Gmail</li>
+          <li>Nhấn <strong>Lấy mã</strong></li>
+        </ol>
+      </li>
+      <li>⏳ Nếu sau khoảng <strong>1–2 phút</strong> vẫn chưa có mã, hãy nhấn <strong>Lấy mã</strong> thêm 1 lần nữa.</li>
+    </ul>
+  </div>
+</div>
+
   </div>
 
   <script>
