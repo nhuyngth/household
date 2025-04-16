@@ -4,8 +4,8 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cập nhật hộ gia đình Netflix</title>
 <link rel="icon" type="image/png" href="assets/img/favicon.png">
-<title>Lấy mã Netflix</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
 <style>
     :root {
@@ -360,7 +360,7 @@
 <div class="popup-content">
 <span class="close" onclick="dongHuongDan()">×</span>
 <h2 id="guideTitle">📌 Hướng dẫn sử dụng</h2>
-<ul>
+<ul id="guideContent">
 <li>✅ Hãy chắc chắn rằng bạn đã chọn <strong>Cập nhật hộ gia đình</strong> trước khi vào website.</li>
 <li>Nếu chưa, hãy làm như sau:
           <ol>
@@ -375,7 +375,7 @@
 </ul>
 </div>
 </div>
-<script>
+<footer style="text-align:center; padding:20px; font-size:14px; color:gray;">2025 © @nhuyngth</footer><script>
 let lang = localStorage.getItem("lang") || "vi";
 
 const texts = {
@@ -389,7 +389,22 @@ const texts = {
     loading: "⏳ Đang kiểm tra email...",
     found: "✅ Mã xác nhận đã tìm thấy!",
     notfound: "⚠️ Không tìm thấy mã xác nhận.",
-    error: "❌ Lỗi kết nối đến máy chủ."
+    error: "❌ Lỗi kết nối đến máy chủ.",
+    banner: "Website đang trong quá trình thử nghiệm, nếu xảy ra lỗi quý khách vui lòng liên hệ seller.",
+    guideTitle: "📌 Hướng dẫn sử dụng",
+    guideContent: `<ul>
+      <li>✅ Hãy chắc chắn rằng bạn đã chọn <strong>Cập nhật hộ gia đình</strong> trước khi vào website.</li>
+      <li>Nếu chưa, hãy làm như sau:
+        <ol>
+          <li>Chọn <strong>Cập nhật hộ gia đình</strong> trên TV hoặc thiết bị</li>
+          <li>Chọn <strong>Gửi email</strong></li>
+          <li>Truy cập trang web này</li>
+          <li>Nhập địa chỉ Gmail</li>
+          <li>Nhấn <strong>Lấy mã</strong></li>
+        </ol>
+      </li>
+      <li>⏳ Nếu sau khoảng <strong>1–2 phút</strong> vẫn chưa có mã, hãy nhấn <strong>Lấy mã</strong> thêm 1 lần nữa.</li>
+    </ul>`
   },
   en: {
     title: "Get Netflix Household Code",
@@ -401,7 +416,22 @@ const texts = {
     loading: "⏳ Checking email...",
     found: "✅ Code found!",
     notfound: "⚠️ No code found.",
-    error: "❌ Server error."
+    error: "❌ Server error.",
+    banner: "This website is currently in testing. If any error occurs, please contact the seller.",
+    guideTitle: "📌 How to use",
+    guideContent: `<ul>
+      <li>✅ Make sure you selected <strong>Update Household</strong> before using this website.</li>
+      <li>If not, please do the following:
+        <ol>
+          <li>Select <strong>Update Household</strong> on your TV or device</li>
+          <li>Select <strong>Send Email</strong></li>
+          <li>Access this website</li>
+          <li>Enter your Gmail address</li>
+          <li>Click <strong>Get Code</strong></li>
+        </ol>
+      </li>
+      <li>⏳ If after <strong>1–2 minutes</strong> you haven’t received the code, click <strong>Get Code</strong> again.</li>
+    </ul>`
   }
 };
 
@@ -411,6 +441,9 @@ function applyLang() {
   document.getElementById("emailInput").placeholder = t.placeholder;
   document.getElementById("btnLayMa").textContent = t.getCode;
   document.querySelector(".btn-group button:nth-child(2)").textContent = t.guide;
+  document.getElementById("bannerText").textContent = t.banner;
+  document.getElementById("guideTitle").textContent = t.guideTitle;
+  document.getElementById("guideContent").innerHTML = t.guideContent;
 }
 
 function toggleLang() {
@@ -419,79 +452,79 @@ function toggleLang() {
   applyLang();
 }
 
+function toggleTheme() {
+  document.body.classList.toggle("light");
+  const icon = document.getElementById("themeToggle");
+  icon.textContent = document.body.classList.contains("light") ? "☀️" : "🌙";
+  localStorage.setItem("theme", document.body.classList.contains("light") ? "light" : "dark");
+}
 
+function moHuongDan() {
+  document.getElementById("popupHuongDan").style.display = "flex";
+}
 
-    function toggleTheme() {
-      document.body.classList.toggle("light");
-      document.getElementById("themeToggle").textContent = document.body.classList.contains("light") ? "☀️" : "🌙";
-      localStorage.setItem("theme", document.body.classList.contains("light") ? "light" : "dark");
+function dongHuongDan() {
+  document.getElementById("popupHuongDan").style.display = "none";
+}
+
+async function layMa() {
+  const email = document.getElementById("emailInput").value.trim();
+  const btn = document.getElementById("btnLayMa");
+  const ketQua = document.getElementById("ketQua");
+  const maCodeDiv = document.getElementById("maCode");
+  document.getElementById("linkCode").textContent = '';
+  maCodeDiv.style.display = "none";
+
+  if (!email) {
+    ketQua.textContent = texts[lang].required;
+    btn.classList.add("shake");
+    setTimeout(() => btn.classList.remove("shake"), 300);
+    return;
+  }
+
+  btn.disabled = true;
+  ketQua.textContent = texts[lang].loading;
+
+  try {
+    const res = await fetch('https://netflix-household.onrender.com/get-code', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      ketQua.textContent = texts[lang].found;
+      document.getElementById("linkCode").textContent = data.code;
+      maCodeDiv.style.display = "block";
+    } else {
+      ketQua.textContent = texts[lang].notfound;
+      btn.classList.add("shake");
+      setTimeout(() => btn.classList.remove("shake"), 300);
     }
+  } catch (err) {
+    ketQua.textContent = texts[lang].error;
+    btn.classList.add("shake");
+    setTimeout(() => btn.classList.remove("shake"), 300);
+  }
 
-    function moHuongDan() {
-      document.getElementById("popupHuongDan").style.display = "flex";
-    }
+  btn.disabled = false;
+}
 
-    function dongHuongDan() {
-      document.getElementById("popupHuongDan").style.display = "none";
-    }
+function copyCode() {
+  const code = document.getElementById("linkCode").textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    alert(texts[lang].copied);
+  });
+}
 
-    async function layMa() {
-      const email = document.getElementById("emailInput").value.trim();
-      const btn = document.getElementById("btnLayMa");
-      const ketQua = document.getElementById("ketQua");
-      const maCodeDiv = document.getElementById("maCode");
-      document.getElementById("linkCode").textContent = '';
-      maCodeDiv.style.display = "none";
-
-      if (!email) {
-        ketQua.textContent = "❗ Vui lòng nhập địa chỉ Gmail.";
-        btn.classList.add("shake");
-        setTimeout(() => btn.classList.remove("shake"), 300);
-        return;
-      }
-
-      btn.disabled = true;
-      ketQua.textContent = "⏳ Đang kiểm tra email...";
-
-      try {
-        const res = await fetch('https://netflix-household.onrender.com/get-code', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email })
-        });
-
-        const data = await res.json();
-        if (data.success) {
-          ketQua.textContent = "✅ Mã xác nhận đã tìm thấy!";
-          document.getElementById("linkCode").textContent = data.code;
-          maCodeDiv.style.display = "block";
-        } else {
-          ketQua.textContent = "⚠️ Không tìm thấy mã xác nhận.";
-          btn.classList.add("shake");
-          setTimeout(() => btn.classList.remove("shake"), 300);
-        }
-      } catch (err) {
-        ketQua.textContent = "❌ Lỗi kết nối đến máy chủ.";
-        btn.classList.add("shake");
-        setTimeout(() => btn.classList.remove("shake"), 300);
-      }
-
-      btn.disabled = false;
-    }
-
-    function copyCode() {
-      const code = document.getElementById("linkCode").textContent;
-      navigator.clipboard.writeText(code).then(() => {
-        alert("✅ Đã copy mã xác nhận!");
-      });
-    }
-
-    window.onload = () => {
-      if (localStorage.getItem("theme") === "light") {
-        document.body.classList.add("light");
-        document.getElementById("themeToggle").textContent = "☀️";
-      }
-    };
-  </script>
-<footer style="text-align:center; padding:20px; font-size:14px; color:gray;">2025 © @nhuyngth</footer></body>
+window.onload = () => {
+  if (localStorage.getItem("theme") === "light") {
+    document.body.classList.add("light");
+    document.getElementById("themeToggle").textContent = "☀️";
+  }
+  applyLang();
+  document.getElementById("emailInput").focus();
+};
+</script></body>
 </html>
