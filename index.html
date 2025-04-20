@@ -339,6 +339,15 @@
     font-size: 14px;
     font-weight: 500;
   }
+    
+    #maCode {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
 </style>
 </link></head>
 <body><div class="floating-banner"><div class="banner-scroll-area"><span class="banner-text" id="bannerText">Website đang trong quá trình thử nghiệm, nếu xảy ra lỗi quý khách vui lòng liên hệ seller.</span></div><div class="banner-controls"><button id="langBtn" onclick="toggleLang()">🌐</button><button id="themeToggle" onclick="toggleTheme()">🌙</button></div></div>
@@ -497,8 +506,9 @@ async function layMa() {
         const data = await res.json();
         if (data.success) {
           ketQua.innerHTML = "✅ Mã xác nhận đã tìm thấy!";
-          document.getElementById("linkCode").textContent = data.code;
+          document.getElementById("linkCode").innerHTML = `<strong>Link:</strong> <a href="${data.code}" target="_blank" style="color:var(--text-color);text-decoration:underline;">${data.code}</a>`;
           maCodeDiv.style.display = "block";
+
         } else {
           ketQua.textContent = "⚠️ " + (data.message || "Không tìm thấy mã xác nhận.");
           btn.classList.add("shake");
